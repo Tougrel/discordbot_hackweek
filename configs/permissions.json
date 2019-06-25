@@ -1,0 +1,40 @@
+{
+    "users": {
+        "25604890750113793": {
+            "blacklist": "disabled",
+            "commands": {
+                "role": "disabled",
+                "clear": "disabled",
+                "ban": "disabled",
+                "server": "enabled",
+                "help": "enabled",
+                "kick": "disabled",
+                "mute": "disabled",
+                "warn": "disabled",
+                "warns": "enabled"
+            },
+            "commandHistory": {},
+            "warns": {
+                "number": 1
+            }
+        },
+        "324502248782823427": {
+            "blacklist": "disabled",
+            "commands": {
+                "role": "disabled",
+                "clear": "disabled",
+                "ban": "disabled",
+                "server": "enabled",
+                "help": "enabled",
+                "kick": "disabled",
+                "mute": "disabled",
+                "warn": "disabled",
+                "warns": "enabled"
+            },
+            "commandHistory": {},
+            "warns": {
+                "number": 1
+            }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "discordbot_hackweek",
+  "version": "1.0.0",
+  "description": "A moderation bot created for the 2019 Discord HackWeek. Based on discord.js",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tougrel/discordbot_hackweek.git"
+  },
+  "keywords": [
+    "discord.js",
+    "discord"
+  ],
+  "author": "Tougrel",
+  "contributors": ["ComradeTurtle", "Ayashiru"],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tougrel/discordbot_hackweek/issues"
+  },
+  "homepage": "https://github.com/Tougrel/discordbot_hackweek#readme"
+}
