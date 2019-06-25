@@ -53,18 +53,18 @@ module.exports.run = function(bot){
         let command = bot.commands.get(commandName) || bot.commands.find(command => command.aliases && command.aliases.includes(commandName));
         if(!command){
             if(config.prefix === "<") return;
-            return msg.channel.send(`${msg.author}, the command you specified was not found! If you believe this is an error, please contact an administrator.`);
+            return msg.channel.send(`🚨 ${msg.author}, the command you specified was not found! If you believe this is an error, please contact an administrator.`);
         }
         
         let name = command.name || command.aliases;
         if(command.guildOnly && msg.channel.type !== "text"){
-            return msg.channel.send(`I'm sorry ${msg.author}, but I can only execute this command inside guilds.`);
+            return msg.channel.send(`🚨 I'm sorry ${msg.author}, but I can only execute this command inside guilds.`);
         }
         if(command.permissions && permissions.users[msg.author.id].commands[name.toLowerCase()] === "disabled"){
-            return msg.channel.send(`I'm sorry ${msg.author}, I'm afraid I can't do that.`);
+            return msg.channel.send(`🚨 I'm sorry ${msg.author}, I'm afraid I can't do that.`);
         }
         if(command.maintenance){
-            return msg.channel.send(`I'm sorry ${msg.author}, this command is currently under maintenance! We are trying our best to make it better. Please try again later!`);
+            return msg.channel.send(`🚨 I'm sorry ${msg.author}, this command is currently under maintenance! We are trying our best to make it better. Please try again later!`);
         }
         if(!cooldowns.has(command.name)){
             cooldowns.set(command.name, new discord.Collection());
@@ -78,7 +78,7 @@ module.exports.run = function(bot){
             if(now < expireTime){
                 let timeLeft = (expireTime - now) / 1000;
                 
-                return msg.channel.send(`${msg.author}, please wait **${timeLeft.toFixed(1)}** more second(s) before reusing the **${command}** command.`);
+                return msg.channel.send(`🚨 ${msg.author}, please wait **${timeLeft.toFixed(1)}** more second(s) before reusing the **${command}** command.`);
             }
         }
 
@@ -93,7 +93,7 @@ module.exports.run = function(bot){
             fs.writeFile("./configs/permissions.json", JSON.stringify(permissions, null, 4), (err) => { if(err) console.log(err) });
         } catch(err) {
             console.log(err);
-            msg.channel.send("An unexpected error occured while executing this command! Please contact a system administrator.");
+            msg.channel.send(":warning: An unexpected error occured while executing this command! Please contact a system administrator. :warning:");
         }
 
     });
