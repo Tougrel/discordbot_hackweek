@@ -1,11 +1,12 @@
 {
     "users": {
-        "25604890750113793": {
+        "256048990750113793": {
             "blacklist": "disabled",
             "commands": {
                 "role": "disabled",
                 "clear": "disabled",
                 "ban": "disabled",
+                "user": "enabled",
                 "server": "enabled",
                 "help": "enabled",
                 "kick": "disabled",
@@ -13,7 +14,11 @@
                 "warn": "disabled",
                 "warns": "enabled"
             },
-            "commandHistory": {},
+            "commandHistoryNumber": 2,
+            "commandHistory": {
+                "1561485413797": "<user <@256048990750113793>",
+                "1561485418239": "<user <@256048990750113793>"
+            },
             "warns": {
                 "number": 1
             }
@@ -31,10 +36,15 @@
                 "warn": "disabled",
                 "warns": "enabled"
             },
-            "commandHistory": {},
-            "warns": {
-                "number": 1
-            }
+            "commandHistoryNumber": 2,
+            "commandHistory": {
+                "1561484883477": "<userinfo <@256048990750113793>",
+                "1561484891218": "<userinfo <@324502248782823427>",
+                "1561485077928": "<userinfo <@324502248782823427>",
+                "1561485369109": "<user <@324502248782823427>"
+            },
+            "warnsNumber": 0,
+            "warns": {}
         }
     }
 }

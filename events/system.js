@@ -3,12 +3,11 @@ module.exports.run = function(bot){
     const discord = require("discord.js");
     const fs = require("fs");
 
-    let permissions = require("../configs/permissions.json"),
-        package = require("../package.json");
-        config = require("../configs/config.json");
-
     const cooldowns = new discord.Collection();
-    const prefix = "!";
+
+    let permissions = require("../configs/permissions.json");
+    let package = require("../package.json");
+    let config = require("../configs/config.json");
 
     bot.on("ready", () => {
         bot.user.setActivity(`Centaurus ${package.version}`);
@@ -31,10 +30,10 @@ module.exports.run = function(bot){
                 warn: "disabled",
                 warns: "enabled"
             },
+            commandHistoryNumber: 0,
             commandHistory: {},
-            warns: {
-                number: 1
-            }
+            warnsNumber: 0,
+            warns: {}
         }
         fs.writeFile("./configs/permissions.json", JSON.stringify(permissions, null, 4), (err) => { if(err) console.log(err) });
     });
@@ -42,21 +41,23 @@ module.exports.run = function(bot){
     // Command Handler
     bot.on("message", msg => {
         if(msg.author.bot) return;
-        if(msg.content.indexOf(prefix) !== 0) return;
+        if(msg.content.indexOf(config.prefix) !== 0) return;
 
-        let args = msg.content.slice(prefix.length).split(/ +/);
+        let args = msg.content.slice(config.prefix.length).split(/ +/);
         let commandName = args.shift().toLowerCase();
         if(!commandName) return;
 
         let command = bot.commands.get(commandName) || bot.commands.find(command => command.aliases && command.aliases.includes(commandName));
         if(!command){
+            if(config.prefix === "<") return;
             return msg.channel.send(`${msg.author}, the command you specified was not found! If you believe this is an error, please contact an administrator.`);
         }
         
+        let name = command.name || command.aliases;
         if(command.guildOnly && msg.channel.type !== "text"){
             return msg.channel.send(`I'm sorry ${msg.author}, but I can only execute this command inside guilds.`);
         }
-        if(command.permissions && permissions.users[msg.author.id].commands[commandName.toLowerCase()] === "disabled"){
+        if(command.permissions && permissions.users[msg.author.id].commands[name.toLowerCase()] === "disabled"){
             return msg.channel.send(`I'm sorry ${msg.author}, I'm afraid I can't do that.`);
         }
         if(command.maintenance){
@@ -83,6 +84,10 @@ module.exports.run = function(bot){
 
         try {
             command.execute(bot, msg, args);
+
+            permissions.users[msg.author.id].commandHistory[msg.createdTimestamp] = msg.content;
+            permissions.users[msg.author.id].commandHistoryNumber += 1;
+            fs.writeFile("./configs/permissions.json", JSON.stringify(permissions, null, 4), (err) => { if(err) console.log(err) });
         } catch(err) {
             console.log(err);
             msg.channel.send("An unexpected error occured while executing this command! Please contact a system administrator.");
