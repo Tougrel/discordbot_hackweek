@@ -20,15 +20,18 @@ module.exports.run = function(bot){
         if(!permissions.users[msg.author.id]) permissions.users[msg.author.id] = {
             blacklist: "disabled",
             commands: {
-                role: "disabled",
-                clear: "disabled",
-                ban: "disabled",
+                permissions: "disabled",
+                botexit: "disabled",
                 server: "enabled",
+                clear: "disabled",
+                warns: "enabled",
+                role: "disabled",
+                user: "enabled",
                 help: "enabled",
                 kick: "disabled",
                 mute: "disabled",
                 warn: "disabled",
-                warns: "enabled"
+                ban: "disabled"
             },
             commandHistoryNumber: 0,
             commandHistory: {},

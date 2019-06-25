@@ -1,0 +1,25 @@
+{
+    "users": {
+        "user-id: {
+            "blacklist": "enabled",
+            "commands": {
+                "permissions": "disabled",
+                "botexit": "disabled",
+                "clear": "disabled",
+                "server": "enabled",
+                "warns": "enabled",
+                "role": "disabled",
+                "user": "enabled",
+                "help": "enabled",
+                "kick": "disabled",
+                "mute": "disabled",
+                "warn": "disabled",
+                "ban": "disabled",
+            },
+            "commandHistoryNumber": 0,
+            "commandHistory": {},
+            "warnsNumber": 0,
+            "warns": {}
+        }
+    }
+}
