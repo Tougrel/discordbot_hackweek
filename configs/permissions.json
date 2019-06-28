@@ -1,47 +1,31 @@
 {
+    "groups": {
+        "members": {},
+        "moderators": {},
+        "administrators": {}
+    },
     "users": {
         "256048990750113793": {
             "blacklist": "disabled",
             "commands": {
-                "role": "disabled",
-                "clear": "disabled",
-                "ban": "disabled",
+                "permissions": "enabled",
+                "shutdown": "enabled",
+                "settings": "enabled",
+                "restart": "enabled",
+                "server": "enabled",
+                "clear": "enabled",
+                "warns": "enabled",
+                "role": "enabled",
                 "user": "enabled",
-                "server": "enabled",
                 "help": "enabled",
-                "kick": "disabled",
-                "mute": "disabled",
-                "warn": "disabled",
-                "warns": "enabled"
+                "kick": "enabled",
+                "mute": "enabled",
+                "warn": "enabled",
+                "ban": "enabled"
             },
-            "commandHistoryNumber": 2,
+            "commandHistoryNumber": 1,
             "commandHistory": {
-                "1561485413797": "<user <@256048990750113793>",
-                "1561485418239": "<user <@256048990750113793>"
-            },
-            "warns": {
-                "number": 1
-            }
-        },
-        "324502248782823427": {
-            "blacklist": "disabled",
-            "commands": {
-                "role": "disabled",
-                "clear": "disabled",
-                "ban": "disabled",
-                "server": "enabled",
-                "help": "enabled",
-                "kick": "disabled",
-                "mute": "disabled",
-                "warn": "disabled",
-                "warns": "enabled"
-            },
-            "commandHistoryNumber": 2,
-            "commandHistory": {
-                "1561484883477": "<userinfo <@256048990750113793>",
-                "1561484891218": "<userinfo <@324502248782823427>",
-                "1561485077928": "<userinfo <@324502248782823427>",
-                "1561485369109": "<user <@324502248782823427>"
+                "1561766159772": "<administrator"
             },
             "warnsNumber": 0,
             "warns": {}

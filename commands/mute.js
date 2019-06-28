@@ -1,6 +1,6 @@
 module.exports = {
-    name        : "ban",
-    aliases     : ["cban"],
+    name        : "mute",
+    aliases     : ["cmute"],
     guildOnly   : true,
     blacklist   : true,
     permissions : true,
@@ -18,7 +18,7 @@ module.exports = {
 
         let text = args.join(" ").split(" ");
         if(!text[0]){
-            return msg.channel.send(`You didn't specify enough arguments! If you believe this is an error, contact a system administrator.\nCommand Usage » ${config.prefix}ban (user) (time) (reason)`);
+            return msg.channel.send(`You didn't specify enough arguments! If you believe this is an error, contact a system administrator.\nCommand Usage » ${config.prefix}mute (user) (time) (reason)`);
         }
 
         let user = msg.mentions.users.first();
@@ -45,7 +45,7 @@ module.exports = {
             let embed = new discord.RichEmbed()
             .setColor(config.color)
             .setAuthor(user.username, user.avatarURL)
-            .setDescription(`User ${user.username} has been banned by ${msg.author}!`)
+            .setDescription(`User ${user.username} has been muted by ${msg.author}!`)
             .addField("Reason", reason)
             .addField("Time", moment.utc(mutetime).format("HH:mm:ss"));
 
@@ -54,24 +54,26 @@ module.exports = {
             msg.channel.send(`${msg.author}, couldn't find logs channels.`);
         }
 
-        times[msg.guild.id].bans = {
+        times[msg.guild.id].mutes = {
             [user.id]: {
                 time: mutetime
             }
         };
 
         let member = msg.guild.members.get(user.id);
+        let muterole = msg.guild.roles.find(role => role.name.toLowerCase() === settings[msg.guild.id].muterole);
+        if(!muterole) return msg.channel.send(`I'm sorry ${msg.author}, but I couldn't find the mute role. Please use \`${config.prefix}settings muterole <role_name>\``);
 
-        member.ban({ reason: reason });
+        member.addRole(muterole);
         setInterval(function(){
-            if(times[msg.guild.id].bans[user.id] && times[msg.guild.id].bans[user.id].time > 0){
-                times[msg.guild.id].bans[user.id].time -= 1000;
+            if(times[msg.guild.id].mutes[user.id] && times[msg.guild.id].mutes[user.id].time > 0){
+                times[msg.guild.id].mutes[user.id].time -= 1000;
             }
             fs.writeFile("./configs/times.json", JSON.stringify(times, null, 4), (err) => { if(err) console.log(err) });
         }, ms("1s"));
         setTimeout(function(){
-            msg.guild.unban(user.id);
-            delete times[msg.guild.id].bans[user.id];
+            member.removeRole(muterole);
+            delete times[msg.guild.id].mutes[user.id];
         }, mutetime);
 
         fs.writeFile("./configs/times.json", JSON.stringify(times, null, 4), (err) => { if(err) console.log(err) });

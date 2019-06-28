@@ -2,6 +2,7 @@ module.exports = {
     name        : "clear",
     aliases     : ["purge"],
     guildOnly   : true,
+    blacklist   : true,
     permissions : true,
     maintenance : false,
     cooldown    : 2,

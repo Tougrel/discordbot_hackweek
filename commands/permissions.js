@@ -2,6 +2,7 @@ module.exports = {
     name        : "permissions",
     aliases     : ["perms"],
     guildOnly   : true,
+    blacklist   : true,
     permissions : true,
     maintenance : false,
     cooldown    : 2,
@@ -30,10 +31,7 @@ module.exports = {
             return msg.channel.send(`${msg.author}, you didn't specify a value! Default values: \`enabled\`, \`disabled\``);
         }
 
-        // <perms [command] [user];
         permissions.users[user.id].commands[command] = value;
-
-        // Write updated permissions to file
         fs.writeFile("./configs/permissions.json", JSON.stringify(permissions, null, 4), (err) => { if(err) console.log(err) });
 
     }

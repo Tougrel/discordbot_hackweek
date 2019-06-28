@@ -1,0 +1,6 @@
+{
+    "TOKEN": "your-token-here",
+    "prefix": "your_prefix_here",
+    "color": "html_color_code",
+    "logs": "channel_name"
+}

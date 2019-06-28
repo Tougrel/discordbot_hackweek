@@ -2,7 +2,7 @@ const discord = require("discord.js");
 const fs = require("fs");
 
 const bot = new discord.Client();
-const secret = require("./configs/secret.json")
+const config = require("./configs/config.json")
 
 bot.commands = new discord.Collection(); 
 
@@ -15,4 +15,4 @@ for(const file of commandFiles){
     bot.commands.set(cmd.name, cmd);
 }
 
-bot.login(secret.TOKEN);
+bot.login(config.TOKEN);

@@ -1,7 +1,8 @@
 module.exports = {
-    name        : "exit",
-    aliases     : ["botexit"],
+    name        : "shutdown",
+    aliases     : ["exit"],
     guildOnly   : true,
+    blacklist   : true,
     permissions : true,
     maintenance : false,
     cooldown    : 2,

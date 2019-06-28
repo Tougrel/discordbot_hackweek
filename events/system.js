@@ -5,38 +5,107 @@ module.exports.run = function(bot){
 
     const cooldowns = new discord.Collection();
 
-    let permissions = require("../configs/permissions.json");
-    let package = require("../package.json");
-    let config = require("../configs/config.json");
+    const permissions = require("../configs/permissions.json");
+    const settings = require("../configs/settings.json");
+    const config = require("../configs/config.json");
+    const times = require("../configs/times.json");
+    const package = require("../package.json");
 
     bot.on("ready", () => {
         bot.user.setActivity(`Centaurus ${package.version}`);
         console.log("System initialized!");
+
+        bot.guilds.forEach(guild => {
+            if(!settings[guild.id]){
+                settings[guild.id] = {
+                    logs: null,
+                    muterole: null
+                }
+            }
+            if(!times[guild.id]){
+                times[guild.id] = {
+                    mutes: {},
+                    warns: {},
+                    bans: {}
+                }
+            }
+        });
+
+        setInterval(function(){
+            bot.guilds.forEach(guild => {
+                for(let i in times[guild.id].bans){
+                    let bans = times[guild.id].bans;
+                    if(bans[i] && bans[i].time > 0){
+                        bans[i].time -= 1000;
+                        fs.writeFile("./configs/times.json", JSON.stringify(times, null, 4), (err) => { if(err) console.log(err) });
+                    }
+                    else if(bans[i] && bans[i].time <= 0){
+                        guild.unban(i);
+                        delete bans[i];
+                        fs.writeFile("./configs/times.json", JSON.stringify(times, null, 4), (err) => { if(err) console.log(err) });
+                    }
+                }
+            });
+        }, 1000);
+        setInterval(function(){
+            bot.guilds.forEach(guild => {
+                let muterole = guild.roles.find(role => role.name.toLowerCase() === settings[guild.id].muterole);
+                if(!muterole) return;
+
+                guild.members.forEach(member => {
+                    if(!guild.members.get(member.id)) return;
+
+                    let mutes = times[guild.id].mutes;
+                    if(mutes[member.id] && mutes[member.id].time > 0){
+                        if(!member.roles.has(muterole.id)){
+                            member.addRole(muterole);
+                        }
+                        mutes[member.id].time -= 1000;
+                        fs.writeFile("./configs/times.json", JSON.stringify(times, null, 4), (err) => { if(err) console.log(err) });
+                    }
+                    else if(mutes[member.id] && mutes[member.id].time <= 0){
+                        if(member.roles.has(muterole.id)){
+                            member.removeRole(muterole);
+                            delete mutes[member.id];
+                            fs.writeFile("./configs/times.json", JSON.stringify(times, null, 4), (err) => { if(err) console.log(err) });
+                        }
+                    }
+                });
+
+            });
+        }, 1000);
+
+        fs.writeFile("./configs/settings.json", JSON.stringify(settings, null, 4), (err) => { if(err) console.log(err) });
+        fs.writeFile("./configs/times.json", JSON.stringify(times, null, 4), (err) => { if(err) console.log(err) });
     });
 
     // Permissions Stats
     bot.on("message", msg => {
         if(msg.author.bot) return;
-        if(!permissions.users[msg.author.id]) permissions.users[msg.author.id] = {
-            blacklist: "disabled",
-            commands: {
-                permissions: "disabled",
-                botexit: "disabled",
-                server: "enabled",
-                clear: "disabled",
-                warns: "enabled",
-                role: "disabled",
-                user: "enabled",
-                help: "enabled",
-                kick: "disabled",
-                mute: "disabled",
-                warn: "disabled",
-                ban: "disabled"
-            },
-            commandHistoryNumber: 0,
-            commandHistory: {},
-            warnsNumber: 0,
-            warns: {}
+        if(!permissions.users[msg.author.id]){
+            permissions.users[msg.author.id] = {
+                blacklist: "disabled",
+                commands: {
+                    permissions: "disabled",
+                    shutdown: "disabled",
+                    settings: "disabled",
+                    restart: "disabled",
+                    server: "enabled",
+                    clear: "disabled",
+                    warns: "enabled",
+                    role: "disabled",
+                    user: "enabled",
+                    help: "enabled",
+                    kick: "disabled",
+                    mute: "disabled",
+                    warn: "disabled",
+                    ban: "disabled"
+                },
+                commandHistoryNumber: 0,
+                commandHistory: {},
+                warnsNumber: 0,
+                warns: {}
+            }
         }
         fs.writeFile("./configs/permissions.json", JSON.stringify(permissions, null, 4), (err) => { if(err) console.log(err) });
     });
@@ -60,8 +129,11 @@ module.exports.run = function(bot){
         if(command.guildOnly && msg.channel.type !== "text"){
             return msg.channel.send(`🚨 I'm sorry ${msg.author}, but I can only execute this command inside guilds.`);
         }
-        if(command.permissions && permissions.users[msg.author.id].commands[name.toLowerCase()] === "disabled"){
+        if(command.blacklist && permissions.users[msg.author.id].blacklist === "enabled"){
             return msg.channel.send(`🚨 I'm sorry ${msg.author}, I'm afraid I can't do that.`);
+        }
+        if(command.permissions && permissions.users[msg.author.id].commands[name.toLowerCase()] === "disabled"){
+            return msg.channel.send(`🚨 I'm sorry ${msg.author}, I'm afraid I can't do that. If you are the guild owner use the command ${config.prefix}administrator.`);
         }
         if(command.maintenance){
             return msg.channel.send(`🚨 I'm sorry ${msg.author}, this command is currently under maintenance! We are trying our best to make it better. Please try again later!`);
@@ -96,6 +168,23 @@ module.exports.run = function(bot){
             msg.channel.send(":warning: An unexpected error occured while executing this command! Please contact a system administrator. :warning:");
         }
 
+    });
+
+    // Create settings.
+    bot.on("guildCreate", guild => {
+        if(!settings[guild.id]){
+            settings[guild.id] = {
+                logs: null,
+                muterole: null
+            }
+        }
+        fs.writeFile("./configs/settings.json", JSON.stringify(settings, null, 4), (err) => { if(err) console.log(err) });
+    });
+
+    // Delete settings.
+    bot.on("guildDelete", guild => {
+        delete settings[guild.id];
+        fs.writeFile("./configs/settings.json", JSON.stringify(settings, null, 4), (err) => { if(err) console.log(err) });
     });
 
 }
