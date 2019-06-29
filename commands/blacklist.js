@@ -1,6 +1,6 @@
 module.exports = {
-    name        : "permissions",
-    aliases     : ["perms"],
+    name        : "blacklist",
+    aliases     : ["blstatus"],
     guildOnly   : true,
     blacklist   : true,
     permissions : true,
@@ -14,10 +14,8 @@ module.exports = {
 
         let text = args.join(" ").split(" ");
         if(!text[0]){
-            return msg.channel.send(`You didn't specify enough arguments! If you believe this is an error, contact a system administrator.\nCommand Usage » ${config.prefix}permissions (command) (user) (value)`);
+            return msg.channel.send(`You didn't specify enough arguments! If you believe this is an error, contact a system administrator.\nCommand Usage » ${config.prefix}blacklist (user) (value)`);
         }
-
-        let command = text[0];
 
         text.shift();
         let user = msg.mentions.users.first();
@@ -30,9 +28,9 @@ module.exports = {
             return msg.channel.send(`${msg.author}, you didn't specify a value! Default values: \`enabled\`, \`disabled\``);
         }
 
-        msg.channel.send(`Successfully changed permission for ${user.username} to ${value}`);
+        msg.channel.send(`Successfully changed blacklist status for ${user.username} to ${value}`);
 
-        permissions.users[user.id].commands[command] = value;
+        permissions.users[user.id].blacklist = value;
         fs.writeFile("./configs/permissions.json", JSON.stringify(permissions, null, 4), (err) => { if(err) console.log(err) });
 
     }

@@ -16,9 +16,12 @@ module.exports = {
         }
 
         permissions.users[msg.author.id] = {
+            advertise: "enabled",
             blacklist: "disabled",
             commands: {
                 permissions: "enabled",
+                blacklist: "enabled",
+                advertise: "enabled",
                 shutdown: "enabled",
                 settings: "enabled",
                 restart: "enabled",

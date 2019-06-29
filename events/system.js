@@ -15,6 +15,11 @@ module.exports.run = function(bot){
         bot.user.setActivity(`Centaurus ${package.version}`);
         console.log("System initialized!");
 
+        if(!permissions.users){
+            permissions.users = {};
+            fs.writeFile("./configs/permissions.json", JSON.stringify(permissions, null, 4), (err) => { if(err) console.log(err) });
+        }
+
         bot.guilds.forEach(guild => {
             if(!settings[guild.id]){
                 settings[guild.id] = {
@@ -84,9 +89,12 @@ module.exports.run = function(bot){
         if(msg.author.bot) return;
         if(!permissions.users[msg.author.id]){
             permissions.users[msg.author.id] = {
+                advertise: "disabled",
                 blacklist: "disabled",
                 commands: {
                     permissions: "disabled",
+                    blacklist: "disabled",
+                    advertise: "disabled",
                     shutdown: "disabled",
                     settings: "disabled",
                     restart: "disabled",
@@ -108,6 +116,18 @@ module.exports.run = function(bot){
             }
         }
         fs.writeFile("./configs/permissions.json", JSON.stringify(permissions, null, 4), (err) => { if(err) console.log(err) });
+    });
+
+    // Anti-Advertise
+    bot.on("message", async msg => {
+        let links = ["discord.gg", "discord.me", "https://", "http://", "www."];
+        if(links.some(w => msg.content.toLowerCase().includes(w))){
+            // If the user has the permission to bypass the anti-advertise system return nothing.
+            if(permissions.users[msg.author.id].advertise === "enabled") return;
+            await msg.delete();
+            
+            msg.channel.send(`Hey, ${msg.author}, sending links isn't allowed here.`).then(message => message.delete(5000));
+        }
     });
 
     // Command Handler

@@ -15,7 +15,7 @@ module.exports = {
         let embed = new discord.RichEmbed()
         .setColor(config.color)
         .addField("Global Commands", "help, server, warns, user")
-        .addField("Administrator Commands", "clear, ban, permissions, mute, kick, warn, role")
+        .addField("Administrator Commands", "clear, ban, permissions, mute, kick, warn, role, blacklist, advperm")
         .addField("Prefix", config.prefix)
         .setFooter(`Centaurus ${package.version}`);
 

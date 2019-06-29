@@ -1,7 +1,8 @@
 {
     "users": {
         "user-id": {
-            "blacklist": "enabled",
+            "advertise": "disabled",
+            "blacklist": "disabled",
             "commands": {
                 "permissions": "disabled",
                 "shutdown": "disabled",
